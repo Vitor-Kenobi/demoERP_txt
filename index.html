@@ -5,14 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gerenciamento de PLUs</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            text-align: center;
+        body { 
+            font-family: Arial, sans-serif; margin: 0; padding: 0; text-align: center; 
+        }
+        .logo { 
+            text-align: center; margin: 20px; 
+        }
+        .img-mt {
+            width: 22%;
+            height: auto;
+            display: block;
+            margin: auto;
         }
         .menu {
-            background: #333;
+            background: #020b86;
             color: white;
             padding: 10px 0;
             display: flex;
@@ -25,37 +31,116 @@
             font-size: 18px;
             cursor: pointer;
         }
-        .logo {
-            text-align: center;
-            margin: 20px;
+        .content { 
+            padding: 20px; 
         }
-        .content {
-            margin: 20px;
+        .hidden { 
+            display: none; 
         }
-        .hidden {
-            display: none;
+        .form-group { 
+            margin: 10px 0; display: flex; justify-content: center; 
         }
-        .form-container {
-            text-align: left;
-            max-width: 400px;
-            margin: auto;
+        .form-group label { 
+            width: 150px; text-align: right; padding-right: 10px; 
         }
-        .form-container label {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 10px;
-        }
-        .form-container input, .form-container select {
-            flex: 1;
-            padding: 5px;
-            margin-left: 10px;
-        }
-        .img-mt {
-            width: 22%;
-            height: auto;
-            display: block;
-            margin: auto;
+        .form-group input { 
+            width: 200px; 
         }
     </style>
 </head>
+<body>
+    <div class="logo">
+        <img src="imgs/mt.jpg" class="img-mt">
+    </div>
+    <div class="menu">
+        <a onclick="showPage('cadastrar')">Cadastrar PLU</a>
+        <a onclick="showPage('alterar')">Alterar PLU</a>
+    </div>
+    <div class="content" id="cadastrar" class="hidden">
+        <h2>Cadastro de PLU</h2>
+    </div>
+    <div class="content hidden" id="alterar">
+        <h2>Alteração de PLU</h2>
+        <h3>Selecione um PLU</h3>
+        <select id="plu" onchange="carregarDetalhesPLU()"></select>
+        <div id="detalhesPLU" class="hidden">
+            <div class="form-group">
+                <label>Nome PLU:</label> <input type="text" id="nome_plu">
+            </div>
+            <div class="form-group">
+                <label>Preço:</label> <input type="text" id="preco">
+            </div>
+            <div class="form-group">
+                <label>Unidade de Medida:</label> <input type="text" id="un_medida">
+            </div>
+            <div class="form-group">
+                <label>Nº do Extra:</label> <input type="text" id="num_texto">
+            </div>
+            <div class="form-group">
+                <label>Nº da Nutrição:</label> <input type="text" id="num_nutricao">
+            </div>
+            <button onclick="salvarPLU()">Salvar</button>
+            <button onclick="cancelarEdicao()">Cancelar</button>
+        </div>
+    </div>
+    <script>
+        function showPage(page) {
+            document.getElementById('cadastrar').classList.add('hidden');
+            document.getElementById('alterar').classList.add('hidden');
+            document.getElementById(page).classList.remove('hidden');
+        }
+
+        function carregarPLUs() {
+            fetch('get_plu.php')
+                .then(response => response.json())
+                .then(data => {
+                    let pluSelect = document.getElementById('plu');
+                    pluSelect.innerHTML = '<option value="">Selecione...</option>';
+                    data.forEach(plu => {
+                        let option = document.createElement('option');
+                        option.value = plu.num_plu;
+                        option.textContent = `${plu.num_plu} - ${plu.nome_plu} - ${parseFloat(plu.preco).toFixed(2)}`;
+                        pluSelect.appendChild(option);
+                    });
+                });
+        }
+
+        function carregarDetalhesPLU() {
+            let plu = document.getElementById('plu').value;
+            fetch(`get_plu.php?plu=${plu}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('nome_plu').value = data.nome_plu;
+                    document.getElementById('preco').value = parseFloat(data.preco).toFixed(2);
+                    document.getElementById('un_medida').value = data.un_medida;
+                    document.getElementById('num_texto').value = data.num_texto;
+                    document.getElementById('num_nutricao').value = data.num_nutricao;
+                    document.getElementById('detalhesPLU').classList.remove('hidden');
+                });
+        }
+
+        function salvarPLU() {
+            let data = {
+                plu: document.getElementById('plu').value,
+                nome_plu: document.getElementById('nome_plu').value,
+                preco: document.getElementById('preco').value,
+                un_medida: document.getElementById('un_medida').value,
+                num_texto: document.getElementById('num_texto').value,
+                num_nutricao: document.getElementById('num_nutricao').value
+            };
+            fetch('update_plu.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            }).then(response => response.text())
+              .then(result => alert(result));
+        }
+
+        function cancelarEdicao() {
+            carregarDetalhesPLU();
+        }
+
+        window.onload = carregarPLUs;
+    </script>
+</body>
+</html>
