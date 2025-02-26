@@ -1,51 +1,113 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerenciamento de PLUs</title>
-    <style>
-        body { 
-            font-family: Arial, sans-serif; margin: 0; padding: 0; text-align: center; 
-        }
-        .logo { 
-            text-align: center; margin: 20px; 
-        }
-        .img-mt {
-            width: 22%;
-            height: auto;
-            display: block;
-            margin: auto;
-        }
-        .menu {
-            background: #020b86;
-            color: white;
-            padding: 10px 0;
-            display: flex;
-            justify-content: center;
-        }
-        .menu a {
-            color: white;
-            text-decoration: none;
-            margin: 0 15px;
-            font-size: 18px;
-            cursor: pointer;
-        }
-        .content { 
-            padding: 20px; 
-        }
-        .hidden { 
-            display: none; 
-        }
-        .form-group { 
-            margin: 10px 0; display: flex; justify-content: center; 
-        }
-        .form-group label { 
-            width: 150px; text-align: right; padding-right: 10px; 
-        }
-        .form-group input { 
-            width: 200px; 
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gerenciamento de PLUs</title>
+<style>
+body { 
+    font-family: Arial, sans-serif; 
+    margin: 0; padding: 0; 
+    text-align: center; 
+}
+.logo { 
+    text-align: center; margin: 20px; 
+}
+.img-mt {
+    width: 22%;
+    height: auto;
+    display: block;
+    margin: auto;
+}
+.menu {
+    background: #020b86;
+    color: white;
+    padding: 10px 0;
+    display: flex;
+    justify-content: center;
+}
+.menu a {
+    color: white;
+    text-decoration: none;
+    margin: 0 15px;
+    font-size: 18px;
+    cursor: pointer;
+}
+.content { 
+    padding: 20px; 
+}
+.hidden { 
+    display: none; 
+}
+.form-group { 
+    margin: 10px 0; display: flex; justify-content: center; 
+}
+.form-group label { 
+    width: 150px; text-align: right; padding-right: 10px; 
+}
+.form-group input { 
+    width: 200px; 
+}
+        /* Estilo da div detalhesPLU */
+#detalhesPLU {
+    width: 100%;
+    max-width: 600px; /* Largura máxima */
+    margin: 0 auto; /* Centraliza a div */
+    padding: 20px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo dos grupos de formulário */
+#detalhesPLU .form-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+/* Estilo dos labels */
+#detalhesPLU .form-group label {
+    flex: 1;
+    text-align: right;
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+/* Estilo dos inputs e selects */
+#detalhesPLU .form-group input,
+#detalhesPLU .form-group select {
+    flex: 2;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+/* Estilo do grupo de botões */
+#detalhesPLU .button-group {
+    display: flex;
+    justify-content: center;
+    gap: 10px; /* Espaçamento entre os botões */
+    margin-top: 20px;
+}
+
+/* Estilo dos botões */
+#detalhesPLU .button-group button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    background-color: #020b86;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#detalhesPLU .button-group button:hover {
+    background-color: #01084d;
+}
     </style>
 </head>
 <body>
@@ -62,65 +124,115 @@
     <div class="content hidden" id="alterar">
         <h2>Alteração de PLU</h2>
         <h3>Selecione um PLU</h3>
-        <select id="plu" onchange="carregarDetalhesPLU()"></select>
-        <div id="detalhesPLU" class="hidden">
+        <select id="plu" onchange="carregarDetalhesPLU()"><option value="std"></option></select>
+        <div id="detalhesPLU" class="hidden form-container">
             <div class="form-group">
-                <label>Nome PLU:</label> <input type="text" id="nome_plu">
+                <label for="nome_plu"><span>Nome PLU:</span></label>
+                <input type="text" id="nome_plu">
             </div>
             <div class="form-group">
-                <label>Preço:</label> <input type="text" id="preco">
+                <label for="preco"><span>Preço:</span></label>
+                <input type="text" id="preco" pattern="^\d+,\d{2}$" placeholder="0,00" oninput="formatarPreco(this)">
             </div>
             <div class="form-group">
-                <label>Unidade de Medida:</label> <input type="text" id="un_medida">
+                <label for="un_medida"><span>Unidade de Medida:</span></label>
+                <select id="un_medida">
+                    <option value="KGM">kg</option>
+                    <option value="PCS">unid</option>
+                </select>
             </div>
             <div class="form-group">
-                <label>Nº do Extra:</label> <input type="text" id="num_texto">
+                <label for="num_texto"><span>Nº do Texto Extra:</span></label>
+                <input type="number" id="num_texto" min="0">
             </div>
             <div class="form-group">
-                <label>Nº da Nutrição:</label> <input type="text" id="num_nutricao">
+                <label for="num_nutricao"><span>Nº da Nutrição:</span></label>
+                <input type="number" id="num_nutricao" min="0">
             </div>
-            <button onclick="salvarPLU()">Salvar</button>
-            <button onclick="cancelarEdicao()">Cancelar</button>
+            <div class="button-group">
+                <button onclick="salvarPLU()">Salvar</button>
+                <button onclick="cancelarEdicao()">Cancelar</button>
+            </div>
         </div>
     </div>
     <script>
+        // Função para alternar entre as páginas
         function showPage(page) {
             document.getElementById('cadastrar').classList.add('hidden');
             document.getElementById('alterar').classList.add('hidden');
             document.getElementById(page).classList.remove('hidden');
         }
 
-        function carregarPLUs() {
-            fetch('get_plu.php')
-                .then(response => response.json())
-                .then(data => {
-                    let pluSelect = document.getElementById('plu');
-                    pluSelect.innerHTML = '<option value="">Selecione...</option>';
-                    data.forEach(plu => {
-                        let option = document.createElement('option');
-                        option.value = plu.num_plu;
-                        option.textContent = `${plu.num_plu} - ${plu.nome_plu} - ${parseFloat(plu.preco).toFixed(2)}`;
-                        pluSelect.appendChild(option);
-                    });
+        // Função para carregar e listar os PLUs
+        async function ListarPLU() {
+            try {
+                // Faz a requisição ao arquivo PHP
+                const response = await fetch('processar_arquivo.php');
+                const itens = await response.json();
+
+                // Seleciona o elemento <select>
+                const select = document.getElementById('plu');
+
+                // Limpa o <select> antes de adicionar novos itens
+                select.innerHTML = '';
+
+                // Adiciona cada item ao <select>
+                    const std = document.createElement('option');
+                    std.value = 'std';
+                    std.text = 'Selecione um PLU...'
+                    select.appendChild(std);
+                itens.forEach(item => {
+                    const option = document.createElement('option');
+                    option.value = item.codigo;
+                    option.text = `${item.codigo} - ${item.descritivo} - ${item.preco}`;
+                    select.appendChild(option);
                 });
+            } catch (error) {
+                console.error('Erro ao carregar os PLUs:', error);
+            }
         }
 
-        function carregarDetalhesPLU() {
-            let plu = document.getElementById('plu').value;
-            fetch(`get_plu.php?plu=${plu}`)
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('nome_plu').value = data.nome_plu;
-                    document.getElementById('preco').value = parseFloat(data.preco).toFixed(2);
-                    document.getElementById('un_medida').value = data.un_medida;
-                    document.getElementById('num_texto').value = data.num_texto;
-                    document.getElementById('num_nutricao').value = data.num_nutricao;
-                    document.getElementById('detalhesPLU').classList.remove('hidden');
-                });
+        // Função para carregar os detalhes do PLU selecionado
+        async function carregarDetalhesPLU() {
+        // Obtém o código do PLU selecionado
+        const plu = document.getElementById('plu').value;
+
+        // Verifica se um PLU foi selecionado
+        if (!plu) {
+            alert('Selecione um PLU válido.');
+            return;
         }
 
-        function salvarPLU() {
-            let data = {
+        try {
+            // Faz a requisição ao arquivo PHP
+            const response = await fetch(`get_plu.php?plu=${plu}`);
+            const data = await response.json();
+
+            // Verifica se há um erro na resposta
+            if (data.error) {
+                alert(data.error);
+                return;
+            }
+
+            // Preenche os campos do formulário com os dados do PLU
+            document.getElementById('nome_plu').value = data.descritivo;
+            document.getElementById('preco').value = data.preco;
+            document.getElementById('un_medida').value = data.un_medida;
+            document.getElementById('num_texto').value = data.num_texto;
+            document.getElementById('num_nutricao').value = data.num_nutricao;
+
+            // Exibe a seção de detalhes
+            document.getElementById('detalhesPLU').classList.remove('hidden');
+        } catch (error) {
+            console.error('Erro ao carregar os detalhes do PLU:', error);
+            alert('Erro ao carregar os detalhes do PLU.');
+        }
+    }
+
+        // Função para salvar as alterações do PLU
+        async function salvarPLU() {
+            // Coleta os dados do formulário
+            const data = {
                 plu: document.getElementById('plu').value,
                 nome_plu: document.getElementById('nome_plu').value,
                 preco: document.getElementById('preco').value,
@@ -128,19 +240,45 @@
                 num_texto: document.getElementById('num_texto').value,
                 num_nutricao: document.getElementById('num_nutricao').value
             };
-            fetch('update_plu.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            }).then(response => response.text())
-              .then(result => alert(result));
+
+            // Valida os campos obrigatórios
+            if (!data.plu || !data.nome_plu || !data.preco || !data.un_medida || !data.num_texto || !data.num_nutricao) {
+                alert('Preencha todos os campos obrigatórios.');
+                return;
+            }
+
+            try {
+                // Envia os dados para o arquivo PHP
+                const response = await fetch('update_plu.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                // Verifica se a requisição foi bem-sucedida
+                if (!response.ok) {
+                    throw new Error('Erro ao salvar os dados.');
+                }
+
+                // Exibe a mensagem de sucesso
+                const result = await response.json();
+                alert(result.success || 'PLU atualizado com sucesso!');
+
+                // Recarrega os detalhes do PLU para exibir as alterações
+                carregarDetalhesPLU();
+            } catch (error) {
+                console.error('Erro ao salvar o PLU:', error);
+                alert('Erro ao salvar o PLU. Verifique o console para mais detalhes.');
+            }
         }
 
+        // Função para cancelar a edição e recarregar os detalhes
         function cancelarEdicao() {
             carregarDetalhesPLU();
         }
 
-        window.onload = carregarPLUs;
+        // Carrega a lista de PLUs ao abrir a página
+        window.onload = ListarPLU;
     </script>
 </body>
 </html>
