@@ -3,7 +3,7 @@ Este é um sistema simples para o **gerenciamento de PLUs**, permitindo cadastra
 
 ## Funcionalidades
 
-- **Cadastrar PLUs**: Permite adicionar novos PLUs ao sistema, fornecendo detalhes como nome, preço, unidade de medida, número do texto extra e número de nutrição.
+- **Cadastrar PLUs -- AINDA NÃO DESENVOLVIDA**: Permite adicionar novos PLUs ao sistema, fornecendo detalhes como nome, preço, unidade de medida, número do texto extra e número de nutrição.
 - **Alterar PLUs**: Permite editar os detalhes de um PLU já existente. Você pode modificar o nome, preço, unidade de medida, e outros dados relacionados.
 - **Visualização de PLUs**: O sistema exibe as informações detalhadas dos PLUs para fácil atualização.
 
